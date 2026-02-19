@@ -11,6 +11,15 @@
                             "messageToDecode": "@triggerBody()"
                         }
                     },
+                    "Extract_Given_Name": {
+                        "type": "Compose",
+                        "inputs": "@xpath(xml(body('Decode_HL7')['messageContent']), '//*[local-name()=\"XPN_1_GivenName\"]/text()')?[0]",
+                        "runAfter": {
+                            "Decode_HL7": [
+                                "SUCCEEDED"
+                            ]
+                        }
+                    },
                     "Transform_JSON_to_JSON": {
                         "type": "Liquid",
                         "kind": "JsonToJson",
@@ -25,7 +34,7 @@
                             }
                         },
                         "runAfter": {
-                            "Decode_HL7": [
+                            "Extract_Given_Name": [
                                 "SUCCEEDED"
                             ]
                         }
@@ -35,7 +44,7 @@
                         "description": "Return a response to the caller. The Body and Headers parameters are optional.",
                         "kind": "Http",
                         "inputs": {
-                            "statusCode": 200,
+                            "statusCode": "@body('Transform_JSON_to_JSON')['validation']['statusCode']",
                             "body": "@body('Transform_JSON_to_JSON')"
                         },
                         "runAfter": {

@@ -1,3 +1,5 @@
+{% assign givenName = content.messagecontent['ns0:ADT_A01_25_GLO_DEF'].PID_PatientIdentification.PID_5_PatientName.XPN_1_GivenName %}
+{% assign patientId = content.messagecontent['ns0:ADT_A01_25_GLO_DEF'].PID_PatientIdentification.PID_3_PatientIdentifierList.CX_0_IdNumber %}
 {
   "messageHeader": {
     "messageType": "{{content.headercontent['ns0:MSH_25_GLO_DEF'].MSH['MSH.9_MessageType']['CM_MSG.0_MessageType']}}^{{content.headercontent['ns0:MSH_25_GLO_DEF'].MSH['MSH.9_MessageType']['CM_MSG.1_TriggerEvent']}}",
@@ -5,8 +7,8 @@
     "hl7Version": "{{content.headercontent['ns0:MSH_25_GLO_DEF'].MSH['MSH.12_VersionId'].VID_0_VersionId}}"
   },
   "patient": {
-    "patientId": "{{content.messagecontent['ns0:ADT_A01_25_GLO_DEF'].PID_PatientIdentification.PID_3_PatientIdentifierList.CX_0_IdNumber}}",
-    "firstName": "{{content.messagecontent['ns0:ADT_A01_25_GLO_DEF'].PID_PatientIdentification.PID_5_PatientName.XPN_1_GivenName}}",
+    "patientId": "{{patientId}}",
+    "firstName": "{{givenName}}",
     "lastName": "{{content.messagecontent['ns0:ADT_A01_25_GLO_DEF'].PID_PatientIdentification.PID_5_PatientName.XPN_0_FamilyName.XPN_0_0_Surname}}",
     "dateOfBirth": "{% assign dob = content.messagecontent['ns0:ADT_A01_25_GLO_DEF'].PID_PatientIdentification.PID_7_DateTimeOfBirth.TS_0_Time %}{{dob |Slice: 0,4}}-{{dob |Slice: 4,2}}-{{dob |Slice: 6,2}}",
     "gender": "{{content.messagecontent['ns0:ADT_A01_25_GLO_DEF'].PID_PatientIdentification.PID_8_AdministrativeSex}}",
@@ -21,5 +23,37 @@
       "lastName": "{{content.messagecontent['ns0:ADT_A01_25_GLO_DEF'].PV1_PatientVisit.PV1_7_AttendingDoctor.XCN_1_FamilyName.XCN_1_0_Surname}}"
     }
   },
-  "status": "Decoded to HL7 XML Successfully"
+  "validation": {
+    {% assign hasErrors = false %}
+    {% if patientId == nil or patientId == blank or patientId == empty or patientId == "" %}
+      {% assign hasErrors = true %}
+    {% endif %}
+    {% if givenName == nil or givenName == blank or givenName == empty or givenName == "" %}
+      {% assign hasErrors = true %}
+    {% endif %}
+    {% if hasErrors %}
+    "isValid": false,
+    "statusCode": 400,
+    "errors": [
+      {% if patientId == nil or patientId == blank or patientId == empty or patientId == "" %}
+      {
+        "field": "patient.patientId",
+        "message": "Patient ID (PID-3) is required and cannot be empty"
+      }{% if givenName == nil or givenName == blank or givenName == empty or givenName == "" %},{% endif %}
+      {% endif %}
+      {% if givenName == nil or givenName == blank or givenName == empty or givenName == "" %}
+      {
+        "field": "patient.firstName",
+        "message": "Given Name (PID-5.1) is required and cannot be empty"
+      }
+      {% endif %}
+    ],
+    "status": "Validation failed - required fields missing"
+    {% else %}
+    "isValid": true,
+    "statusCode": 200,
+    "errors": [],
+    "status": "Decoded to HL7 XML Successfully"
+    {% endif %}
+  }
 }
