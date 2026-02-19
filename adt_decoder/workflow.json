@@ -1,0 +1,94 @@
+{
+    "definition": {
+        "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+        "actions": {
+            "Try": {
+                "type": "Scope",
+                "actions": {
+                    "Decode_HL7": {
+                        "type": "HL7Decode",
+                        "inputs": {
+                            "messageToDecode": "@triggerBody()"
+                        }
+                    },
+                    "Extract_Given_Name": {
+                        "type": "Compose",
+                        "inputs": "@xpath(xml(body('Decode_HL7')['messageContent']), '//*[local-name()=\"XPN_1_GivenName\"]/text()')?[0]",
+                        "runAfter": {
+                            "Decode_HL7": [
+                                "SUCCEEDED"
+                            ]
+                        }
+                    },
+                    "Transform_JSON_to_JSON": {
+                        "type": "Liquid",
+                        "kind": "JsonToJson",
+                        "inputs": {
+                            "content": {
+                                "messagecontent": "@json(body('Decode_HL7')['messageContent'])",
+                                "headercontent": "@json(body('Decode_HL7')['headerContent'])"
+                            },
+                            "map": {
+                                "source": "LogicApp",
+                                "name": "hl7-adt-a01-to-json.liquid"
+                            }
+                        },
+                        "runAfter": {
+                            "Extract_Given_Name": [
+                                "SUCCEEDED"
+                            ]
+                        }
+                    },
+                    "Response": {
+                        "type": "Response",
+                        "description": "Return a response to the caller. The Body and Headers parameters are optional.",
+                        "kind": "Http",
+                        "inputs": {
+                            "statusCode": "@body('Transform_JSON_to_JSON')['validation']['statusCode']",
+                            "body": "@body('Transform_JSON_to_JSON')"
+                        },
+                        "runAfter": {
+                            "Transform_JSON_to_JSON": [
+                                "SUCCEEDED"
+                            ]
+                        }
+                    }
+                },
+                "runAfter": {}
+            },
+            "Catch": {
+                "type": "Scope",
+                "actions": {
+                    "Response_Error": {
+                        "type": "Response",
+                        "kind": "Http",
+                        "inputs": {
+                            "statusCode": 400,
+                            "body": {
+                                "status": 400,
+                                "error": "BadRequest",
+                                "message": "HL7 decode failed"
+                            }
+                        }
+                    }
+                },
+                "runAfter": {
+                    "Try": [
+                        "FAILED",
+                        "TIMEDOUT"
+                    ]
+                }
+            }
+        },
+        "contentVersion": "1.0.0.0",
+        "outputs": {},
+        "triggers": {
+            "When_a_HTTP_request_is_received": {
+                "type": "Request",
+                "description": "Create a callable REST endpoint URL for this workflow and wait to receive a request over HTTP or HTTPS, which triggers the workflow.",
+                "kind": "Http"
+            }
+        }
+    },
+    "kind": "stateful"
+}

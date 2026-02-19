@@ -1,0 +1,39 @@
+{
+    "messageHeader": {
+        "messageType": "ADT^A01",
+        "messageControlId": "MSG00001",
+        "hl7Version": "2.5"
+    },
+    "patient": {
+        "patientId": "",
+        "firstName": "",
+        "lastName": "Doe",
+        "dateOfBirth": "1980-01-01",
+        "gender": "M",
+        "phoneNumber": "555-123-4567"
+    },
+    "visit": {
+        "patientClass": "I",
+        "location": "2000-2012-01",
+        "attendingDoctor": {
+            "doctorId": "1234",
+            "firstName": "Adam",
+            "lastName": "Smith"
+        }
+    },
+    "validation": {
+        "isValid": false,
+        "statusCode": 400,
+        "errors": [
+            {
+                "field": "patient.patientId",
+                "message": "Patient ID (PID-3) is required and cannot be empty"
+            },
+            {
+                "field": "patient.firstName",
+                "message": "Given Name (PID-5.1) is required and cannot be empty"
+            }
+        ],
+        "status": "Validation failed - required fields missing"
+    }
+}
