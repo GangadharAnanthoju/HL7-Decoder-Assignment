@@ -1,0 +1,25 @@
+{
+  "messageHeader": {
+    "messageType": "{{content.headercontent['ns0:MSH_25_GLO_DEF'].MSH['MSH.9_MessageType']['CM_MSG.0_MessageType']}}^{{content.headercontent['ns0:MSH_25_GLO_DEF'].MSH['MSH.9_MessageType']['CM_MSG.1_TriggerEvent']}}",
+    "messageControlId": "{{content.headercontent['ns0:MSH_25_GLO_DEF'].MSH['MSH.10_MessageControlId']}}",
+    "hl7Version": "{{content.headercontent['ns0:MSH_25_GLO_DEF'].MSH['MSH.12_VersionId'].VID_0_VersionId}}"
+  },
+  "patient": {
+    "patientId": "{{content.messagecontent['ns0:ADT_A01_25_GLO_DEF'].PID_PatientIdentification.PID_3_PatientIdentifierList.CX_0_IdNumber}}",
+    "firstName": "{{content.messagecontent['ns0:ADT_A01_25_GLO_DEF'].PID_PatientIdentification.PID_5_PatientName.XPN_1_GivenName}}",
+    "lastName": "{{content.messagecontent['ns0:ADT_A01_25_GLO_DEF'].PID_PatientIdentification.PID_5_PatientName.XPN_0_FamilyName.XPN_0_0_Surname}}",
+    "dateOfBirth": "{% assign dob = content.messagecontent['ns0:ADT_A01_25_GLO_DEF'].PID_PatientIdentification.PID_7_DateTimeOfBirth.TS_0_Time %}{{dob |Slice: 0,4}}-{{dob |Slice: 4,2}}-{{dob |Slice: 6,2}}",
+    "gender": "{{content.messagecontent['ns0:ADT_A01_25_GLO_DEF'].PID_PatientIdentification.PID_8_AdministrativeSex}}",
+    "phoneNumber": "{{content.messagecontent['ns0:ADT_A01_25_GLO_DEF'].PID_PatientIdentification.PID_13_PhoneNumberHome.XTN_0_TelephoneNumber}}"
+  },
+  "visit": {
+    "patientClass": "{{content.messagecontent['ns0:ADT_A01_25_GLO_DEF'].PV1_PatientVisit.PV1_2_PatientClass}}",
+    "location": "{{content.messagecontent['ns0:ADT_A01_25_GLO_DEF'].PV1_PatientVisit.PV1_3_AssignedPatientLocation.PL_0_PointOfCare}}-{{content.messagecontent['ns0:ADT_A01_25_GLO_DEF'].PV1_PatientVisit.PV1_3_AssignedPatientLocation.PL_1_Room}}-{{content.messagecontent['ns0:ADT_A01_25_GLO_DEF'].PV1_PatientVisit.PV1_3_AssignedPatientLocation.PL_2_Bed}}",
+    "attendingDoctor": {
+      "doctorId": "{{content.messagecontent['ns0:ADT_A01_25_GLO_DEF'].PV1_PatientVisit.PV1_7_AttendingDoctor.XCN_0_IdNumber}}",
+      "firstName": "{{content.messagecontent['ns0:ADT_A01_25_GLO_DEF'].PV1_PatientVisit.PV1_7_AttendingDoctor.XCN_2_GivenName}}",
+      "lastName": "{{content.messagecontent['ns0:ADT_A01_25_GLO_DEF'].PV1_PatientVisit.PV1_7_AttendingDoctor.XCN_1_FamilyName.XCN_1_0_Surname}}"
+    }
+  },
+  "status": "Decoded to HL7 XML Successfully"
+}
