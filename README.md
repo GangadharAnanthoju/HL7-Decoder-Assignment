@@ -47,10 +47,10 @@
 }
 ```
 
-## Notes
+### Notes
 
-- Replace values specific to your subscription before running locally.
-- Keep `local.settings.json` local and do not commit secrets.
+- Replace values specific to your subscription before running locally and make sure you added WORKFLOW_INTEGRATION_ACCOUNT_CALLBACK_URL
+
 
 ## Design decisions
 
