@@ -56,7 +56,7 @@
 
 - Logic App Standard is used so the workflow can run locally in VS Code.
 - HTTP trigger is used to accept HL7 input for easy testing with Postman/curl.
-- HL7 schema validation/decoding is delegated to the Integration Account artifacts.
+- HL7 schema decoding is delegated to the Integration Account artifacts.
 
 
 ## XPath expressions (reference)
