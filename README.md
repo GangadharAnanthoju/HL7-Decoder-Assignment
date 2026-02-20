@@ -244,7 +244,7 @@ PV1|1|I|2000^2012^01||||1234^Smith^Adam
 ## Assumptions
 
 - `local.settings.json` contains valid values for tenant/subscription/resource group/location and callback URL.
-- Invalid HL7 messages are not handled in the current implementation,I ass it is not timing out..something we have to check on it..
+- Invalid HL7 messages are not handled in the current implementation, it is  timing out..something we have to check on it..
 - The output structure was modified slightly to include a `validation` section with field-level error reporting and dynamic HTTP status codes.
 
 ## Screenshots
